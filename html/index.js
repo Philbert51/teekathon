@@ -34,6 +34,8 @@ colors = {
     WALL_BORDER: "#050505",
 }
 
+let current_level = undefined;
+
 
 // Disable default scrollbar movement from arrow keys
 window.addEventListener(
@@ -143,7 +145,6 @@ function convertFileToPushworld(name, filedump) {
     }
 
     pushworld.initial_state = pushworld.moveables.map(m => m.position);
-
     return pushworld;
 }
 
@@ -443,10 +444,9 @@ function drawGrid(render_window, grid_dimensions) {
 }
 
 function move(pushworld, state, displacement) {
+
     var next_state;
     var [pushed_object_ids, transitive_stopping] = getPushedObjects(pushworld, state, displacement);
-    console.log(pushed_object_ids);
-    console.log(transitive_stopping);
 
     if (transitive_stopping) {
         next_state = state;
@@ -847,12 +847,15 @@ function displayPuzzle(pushworld, preview_div, preview_panel) {
     clone.data("puzzle", pushworld);
 
     clone.click(pushworld, (event) => {
+        
         var pushworld = event.data;
         $('.pushworld_puzzles .puzzle_panel .title').html(pushworld.name);
         preview_panel.css("display", "none");
         active_preview_panel = preview_panel;
         $('.pushworld_puzzles .puzzle_panel').css("display", "inline");
         initGame(pushworld);
+
+        
     })
 
     var canvas = clone.children("canvas")[0];

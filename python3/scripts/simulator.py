@@ -32,13 +32,12 @@ def incrementAndPrint() :
 
 def main() :
 
-    user_input = input('input level : \n')
+    user_input = input('level : ')
 
-    pushworld_level = convertDataToUseable(user_input)
-    dictionary = {}
 
     profiler.enable()
-    [solutions, visited_state_list] = BFS(pushworld_level)
+    converted_level = convertDataToUseable(user_input)
+    [solutions, visited_state_list] = BFS(converted_level)
     profiler.disable()
     for array in solutions :
         print(array)
@@ -74,7 +73,70 @@ def convertDataToUseable(stringified) :
         modified_data['walls'] = temp_array
 
     #for computing the relative objects moveables in which they collision with each other
+    moveables_collision_relative = {}
+    for moveable in modified_data['moveables'] :
+        for other_moveable in modified_data['moveables'] :
+            obj = moveable
+            other_obj = other_moveable
+            if obj == other_obj : continue
+            if not(obj['id'] in moveables_collision_relative) : #if dont contain the ids yet make a key with that id
+                moveables_collision_relative[obj['id']] = {}
 
+            if not(other_obj['id'] in moveables_collision_relative) : #if dont contain the ids yet make a key with that id
+                moveables_collision_relative[other_obj['id']] = {}
+
+            #if the data is already there
+            if other_obj['id'] in moveables_collision_relative[obj['id']] and obj['id'] in moveables_collision_relative[other_obj['id']] : continue
+            moveables_collision_relative[obj['id']][other_obj['id']] = set()
+            moveables_collision_relative[other_obj['id']][obj['id']] = set()
+            
+            
+            #look for longest pixel
+            max_x = next(iter(obj['boundaryPixels']))[0]
+            max_y = next(iter(obj['boundaryPixels']))[1]
+            for pixel in obj['boundaryPixels'] : #index 0 = x, index 1 = y
+                if pixel[0] > max_x :
+                    max_x = pixel[0]
+                if pixel[1] > max_y :
+                    max_y = pixel[1]
+
+            for pixel in other_obj['boundaryPixels'] : #index 0 = x, index 1 = y
+                if pixel[0] > max_x :
+                    max_x = pixel[0]
+                if pixel[1] > max_y :
+                    max_y = pixel[1]
+            
+
+            # max_x_other_obj = next(iter(other_obj['boundaryPixels']))[0]
+            # max_y_other_obj = next(iter(other_obj['boundaryPixels']))[1]
+            # for pixel in other_obj['boundaryPixels'] : #the goal 
+            #     if pixel[0] > max_x_other_obj :
+            #         max_x_other_obj = pixel[0]
+            #     if pixel[1] > max_y_other_obj :
+            #         max_y_other_obj = pixel[1]
+
+            grid = [max_x + 1, max_y + 1]
+
+            for i in range(grid[0]) :
+                for j in range(grid[1]) : 
+                    for k in range(grid[0]) :
+                        for l in range(grid[1]) :  
+                            relative = (i - k, j - l)
+                            if relative in moveables_collision_relative[moveable['id']][other_moveable['id']] : continue
+                            for pixel in obj['boundaryPixels'] :
+                                if (pixel[0] + relative[0], pixel[1] + relative[1]) in other_obj['boundaryPixels'] :
+                                    if not (relative in moveables_collision_relative[moveable['id']][other_moveable['id']]) :
+                                        moveables_collision_relative[moveable['id']][other_moveable['id']].add(relative)
+                                        moveables_collision_relative[other_moveable['id']][moveable['id']].add((relative[0] * -1, relative[1] * -1))
+                                        # print('found redundant at : A =', [i, j], ', B =' ,[k, l], ', relative =',relative)
+                                    else :
+                                        pass
+                                        # print('collision at relative : A =', [i, j], ', B =' ,[k, l], ', relative =',relative)
+                                    break
+
+    modified_data['moveables_collision_relative'] = moveables_collision_relative
+    for obj_id in moveables_collision_relative :
+        print(f"{obj_id} : \n {moveables_collision_relative[obj_id]}")
     return modified_data
 
 def BFS(pushworld) : #already sorted file pushworld
@@ -171,6 +233,7 @@ def getPushedObjects(pushworld, state, displacement, absolute_moveables_pixels, 
     moving_parts = [actor]
     absolute_fixed_walls = pushworld['walls'][0]['boundaryPixels'] #index 0 is walls in the lord we trust #tuple
     absolute_actor_walls = [] if len(pushworld['walls']) < 2 else pushworld['walls'][1]['boundaryPixels']
+
     
     while len(moving_parts) > 0 and not transitive_stopping :
         obj = moving_parts.pop()
@@ -185,16 +248,24 @@ def getPushedObjects(pushworld, state, displacement, absolute_moveables_pixels, 
                 transitive_stopping = True
                 break
 
-            for index in range(len(absolute_moveables_pixels)) :
-                if index == id_to_index[obj['id']] : continue #ignores self pixel hitbox
-                if after_displacement in absolute_moveables_pixels[index] : #checks if pixels overlap         
-                    moving_parts.append(pushworld['moveables'][index])  
-
             if obj['id'] == 'a' :
                 if after_displacement in absolute_actor_walls : 
                     transitive_stopping = True
                     break
 
+        after_displacement = (state[id_to_index[obj['id']]][0] + displacement[0], state[id_to_index[obj['id']]][1] + displacement[1])
+        for key in pushworld['moveables_collision_relative'][obj['id']] :
+            if key in pushed_object_ids : continue
+            
+            relative = (after_displacement[0] - state[id_to_index[key]][0],after_displacement[1] - state[id_to_index[key]][1])
+            # print(f"{state[id_to_index[key]]} - {after_displacement} = {relative}")
+            if relative in pushworld['moveables_collision_relative'][obj['id']][key] : #a m0
+                moving_parts.append(pushworld['moveables'][id_to_index[key]])
+            #     print(key + ' - ' + obj['id'] + ' : collision')
+            # else :
+            #     print(key + ' - ' + obj['id'] +' : no collision')
+
+            
     return [pushed_object_ids, transitive_stopping]
 
 def isGoalState(pushworld, state) :
