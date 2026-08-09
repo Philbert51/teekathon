@@ -66,11 +66,14 @@ def convertDataToUseable(stringified) :
 
                 else :
                     modified_data[key_name][obj_index]['boundaryPixels'] = { tuple(addPoints(modified_data[key_name][obj_index]['position'], pixel)) for pixel in modified_data[key_name][obj_index]['boundaryPixels'] }
-    modified_data['goalObjects'] = tuple(modified_data['goalObjects'])
 
+
+    modified_data['goalObjects'] = tuple(modified_data['goalObjects']) #knows the goal index
     if not (modified_data['walls'][0]['id'] == 'w') :
         temp_array = [modified_data['walls'][1], modified_data['walls'][0]] #swap
         modified_data['walls'] = temp_array
+
+    #for computing the relative objects moveables in which they collision with each other
 
     return modified_data
 
