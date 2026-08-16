@@ -229,7 +229,7 @@ def nonCurriculum(queue : q.Queue) :
         if feedback is None :
             updateMessageQueue(f"Solved on attempt {attempt + 1}", queue)
             updateMessageQueue(f"Solution : {moves}", queue)
-            updateMessageQueue(f"Python script : \n{output.output_text}")
+            updateMessageQueue(f"Python script : \n{output.output_text}", queue)
             return
 
         updateMessageQueue(f"Attempt {attempt + 1} failed : {feedback}", queue)

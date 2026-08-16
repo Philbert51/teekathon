@@ -57,7 +57,7 @@ let current_level = undefined;
 let current_level_string = undefined;
 let timer = null;
 const action_label_to_keycode = { 'U' : '38', 'D' : '40', 'L' : '37', 'R' : '39' }
-const backendUrl = 'http://127.0.0.1:8000'; //must have http
+const backendUrl = 'https://web-production-a19aa.up.railway.app/'; //must have http
 function printOutput(message) {
 
     const line = `[${new Date().toLocaleTimeString()}] : ${message}`
