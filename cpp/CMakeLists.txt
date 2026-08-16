@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
+if(MSVC)
+    add_compile_options(/permissive-)
+endif()
 
 project(PushWorld VERSION 1.0)
 
@@ -76,4 +79,3 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
-add_subdirectory(test)

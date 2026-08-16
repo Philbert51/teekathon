@@ -1,0 +1,10 @@
+^C:\USERS\FLUPP\DOCUMENTS\GITHUB\TEEKATHON\CPP\BUILD\CMAKEFILES\0588766370CD49233119EA8707F11A19\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/flupp/Documents/GitHub/teekathon/cpp -BC:/Users/flupp/Documents/GitHub/teekathon/cpp/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/flupp/Documents/GitHub/teekathon/cpp/build/PushWorld.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

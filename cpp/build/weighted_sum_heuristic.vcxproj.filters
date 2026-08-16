@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\flupp\Documents\GitHub\teekathon\cpp\src\heuristics\weighted_sum.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\flupp\Documents\GitHub\teekathon\cpp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1253D358-3564-3B23-9D9A-E7B797814DBE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

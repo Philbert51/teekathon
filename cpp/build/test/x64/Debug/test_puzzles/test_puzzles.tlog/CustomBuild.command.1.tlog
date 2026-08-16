@@ -1,0 +1,20 @@
+^C:\USERS\FLUPP\DOCUMENTS\GITHUB\TEEKATHON\CPP\BUILD\CMAKEFILES\980B79ADD685F9325E168D0B8A328FA8\TEST_PUZZLES.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E create_symlink C:/Users/flupp/Documents/GitHub/teekathon/cpp/test/puzzles C:/Users/flupp/Documents/GitHub/teekathon/cpp/build/bin/test/puzzles
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\FLUPP\DOCUMENTS\GITHUB\TEEKATHON\CPP\TEST\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/flupp/Documents/GitHub/teekathon/cpp -BC:/Users/flupp/Documents/GitHub/teekathon/cpp/build --check-stamp-file C:/Users/flupp/Documents/GitHub/teekathon/cpp/build/test/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

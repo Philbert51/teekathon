@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/test/unit_test.hpp>
-
+#include <iso646.h>
 #include "heuristics/domain_transition_graph.h"
 #include "pushworld_puzzle.h"
 

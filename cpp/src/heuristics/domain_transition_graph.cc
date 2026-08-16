@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "heuristics/domain_transition_graph.h"
-
+#include <iso646.h>
 #include <boost/functional/hash.hpp>
 #include <limits>
 #include <memory>

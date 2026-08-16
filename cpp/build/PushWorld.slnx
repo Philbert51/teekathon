@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug"/>
+		<BuildType Name="Release"/>
+		<BuildType Name="MinSizeRel"/>
+		<BuildType Name="RelWithDebInfo"/>
+		<Platform Name="x64"/>
+	</Configurations>
+	<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="151e4b8d-d0e3-3d0e-bb80-d00736b10302" DefaultStartup="true">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="domain_transition_graph.vcxproj"/>
+		<BuildDependency Project="novelty_heuristic.vcxproj"/>
+		<BuildDependency Project="pushworld_puzzle.vcxproj"/>
+		<BuildDependency Project="random_action_iterator.vcxproj"/>
+		<BuildDependency Project="recursive_graph_distance.vcxproj"/>
+		<BuildDependency Project="run_planner.vcxproj"/>
+		<BuildDependency Project="search.vcxproj"/>
+		<BuildDependency Project="weighted_sum_heuristic.vcxproj"/>
+		<Build Solution="Debug|*" Project="false"/>
+		<Build Solution="Release|*" Project="false"/>
+		<Build Solution="MinSizeRel|*" Project="false"/>
+		<Build Solution="RelWithDebInfo|*" Project="false"/>
+	</Project>
+	<Project Path="ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="bb2dc875-1660-3cf0-aa5b-6455653f1c32"/>
+	<Project Path="domain_transition_graph.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="b1b3401d-8a8e-3d5c-98f5-3f470f8e48e6">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="novelty_heuristic.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d0398f28-3da1-343b-b481-4b1ebeedcb28">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="pushworld_puzzle.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="defad29b-70ab-3a5c-b051-49adb5adac10">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="random_action_iterator.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="94b17326-c4f8-3636-bd6a-da28779b3a62">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="recursive_graph_distance.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a9ca9f46-bbc8-3cc5-9a2b-e98f6d1b138d">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="domain_transition_graph.vcxproj"/>
+		<BuildDependency Project="pushworld_puzzle.vcxproj"/>
+	</Project>
+	<Project Path="run_planner.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="1edd0789-b3ca-3ec3-8dd2-af048ccc4478">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="domain_transition_graph.vcxproj"/>
+		<BuildDependency Project="novelty_heuristic.vcxproj"/>
+		<BuildDependency Project="pushworld_puzzle.vcxproj"/>
+		<BuildDependency Project="random_action_iterator.vcxproj"/>
+		<BuildDependency Project="recursive_graph_distance.vcxproj"/>
+		<BuildDependency Project="search.vcxproj"/>
+		<BuildDependency Project="weighted_sum_heuristic.vcxproj"/>
+	</Project>
+	<Project Path="search.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="0a924e40-ad3f-3271-9410-dbd7143e9589">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="pushworld_puzzle.vcxproj"/>
+	</Project>
+	<Project Path="weighted_sum_heuristic.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="45a618a2-8752-3408-a1ed-daa0e3636060">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+</Solution>

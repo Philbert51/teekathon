@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "heuristics/recursive_graph_distance.h"
-
+#include <iso646.h>
 #include <assert.h>
 
 #include <limits>

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 // Github settings
 github_repo = "deepmind/pushworld"
 file_source = "https://raw.githubusercontent.com/" + github_repo + "/main/"
@@ -34,7 +35,7 @@ colors = {
     WALL_BORDER: "#050505",
 }
 
-let current_level = undefined;
+
 
 
 // Disable default scrollbar movement from arrow keys
@@ -50,6 +51,219 @@ window.addEventListener(
     false
 );
 
+//custom-added
+let solution = '';
+let current_level = undefined;
+let current_level_string = undefined;
+let timer = null;
+const action_label_to_keycode = { 'U' : '38', 'D' : '40', 'L' : '37', 'R' : '39' }
+const backendUrl = 'http://127.0.0.1:8000'; //must have http
+function printOutput(message) {
+
+    const line = `[${new Date().toLocaleTimeString()}] : ${message}`
+    console.log(line);
+    const log = $('.output_log');
+    log.append(document.createTextNode(line + '\n'));
+    log.parent()[0].scrollTop = log.parent()[0].scrollHeight;
+
+}
+function fetchSolver(data) { //must already be stringified and ready to send
+
+    return fetch(backendUrl, {
+        method: 'POST',
+        headers: new Headers({ "Content-type": 'application/json' }),
+        body: data
+    })
+
+}
+
+/**
+ * @returns {EventSource}
+ */
+function eventSource(id) { //must already be stringified and ready to send
+
+    return new EventSource(backendUrl + '/receive/' + id)
+
+}
+function stringSolutionChecker(message) {
+
+    if (message.startsWith("Solution : ")) {
+
+        $('#moves').val(message.split("Solution : ")[1]);
+
+    }
+
+}
+$('#BFS').on('click', async (e) => {
+
+    const send = {}
+    send['puzzle'] = current_level;
+    send['algorithm'] = 'BFS';
+    try {
+        var data = await fetchSolver(JSON.stringify(send)).then(async (response) => {
+
+            if (response.ok) {
+
+                return response.json();
+
+            }
+            else {
+
+                printOutput(await response.json());
+
+            }
+
+        });
+
+        const stream = eventSource(data.id);
+        stream.onmessage = (e) => {
+            printOutput(e.data);
+            stringSolutionChecker(e.data);
+        }
+        stream.onerror = () => { stream.close() }
+
+    } catch (e) {
+
+        printOutput(e);
+
+    }
+
+
+
+});
+
+
+
+
+$('#DFS').on('click', async (e) => {
+
+    const send = {}
+    send['puzzle'] = current_level;
+    send['algorithm'] = 'DFS';
+    try {
+        var data = await fetchSolver(JSON.stringify(send)).then(async (response) => {
+
+            if (response.ok) {
+
+                return response.json();
+
+            }
+            else {
+
+                printOutput(await response.json());
+
+            }
+
+        });
+
+        const stream = eventSource(data.id);
+        stream.onmessage = (e) => { printOutput(e.data) ;
+            stringSolutionChecker(e.data);}
+        stream.onerror = () => { stream.close() }
+
+    } catch (e) {
+
+        printOutput(e);
+
+    }
+
+});
+
+
+$('#RGD').on('click', async (e) => {
+
+    const send = {}
+    send['puzzle'] = current_level_string;
+    send['algorithm'] = 'RGD';
+    try {
+        var data = await fetchSolver(JSON.stringify(send)).then(async (response) => {
+
+            if (response.ok) {
+
+                return response.json();
+
+            }
+            else {
+
+                printOutput(await response.json());
+
+            }
+
+        });
+
+        const stream = eventSource(data.id);
+        stream.onmessage = (e) => { printOutput(e.data) ;
+            stringSolutionChecker(e.data);}
+        stream.onerror = () => { stream.close() }
+
+    } catch (e) {
+
+        printOutput(e);
+
+    }
+
+});
+$('#LLM').on('click', async (e) => {
+
+    const send = {}
+    send['curriculum'] = $('#curriculum').is(':checked');
+    send['algorithm'] = 'LLM';
+    try {
+        var data = await fetchSolver(JSON.stringify(send)).then(async (response) => {
+
+            if (response.ok) {
+
+                return response.json();
+
+            }
+            else {
+
+                printOutput(await response.json());
+
+            }
+
+        });
+
+        const stream = eventSource(data.id);
+        stream.onmessage = (e) => {
+            printOutput(e.data);
+            stringSolutionChecker(e.data);
+        }
+        stream.onerror = () => { stream.close() }
+
+    } catch (e) {
+
+        printOutput(e);
+
+    }
+
+});
+
+$('#run_solution').on('click', () => {
+    active_game.state_history = [active_game.pushworld.initial_state];
+    active_game.action_history = "";
+    repaint(active_game);
+    if (timer) clearInterval(timer);
+
+    const moves = $('#moves').val().trim();
+    if (!moves) return;
+
+    let index = 0;
+
+    timer = setInterval(() => {
+
+        if (index >= moves.length) {
+            clearInterval(timer);
+            timer = null;
+            return;
+        }
+
+        keydownHandler(action_label_to_keycode[moves[index]]);
+        index++;
+
+    }, 150);
+});
+//custom-added
 
 function convertFileToPushworld(name, filedump) {
     var lines = filedump.split("\n").map(line => line.trim()).filter(line => line);
@@ -645,27 +859,6 @@ function repaint(game_instance, show_grid = true) {
 
 
 function initGame(pushworld) {
-    const keyToTransfer = ['moveables', 'walls', 'goals'];
-    const propertiesToTransfer = ['id', 'boundaryPixels', 'position', 'goal_position'];
-    const temp_level = {};
-    for (const values of keyToTransfer) {
-        
-        temp_level[values] = []; //moveables
-        
-        for (const _values of pushworld[values]) {
-
-            const temp = {};
-            for (const __values of propertiesToTransfer) { //['id', 'boundaryPixels', 'position']
-
-                if (_values[__values] != null) temp[__values] = _values[__values];
-
-            }
-            temp_level[values].push(temp);
-
-        }
-
-    }
-    console.log(JSON.stringify(temp_level));
     var canvas = $("#play_canvas");
     active_game = {
         pushworld: pushworld,
@@ -719,7 +912,8 @@ function loadPuzzleGroup(group_name) {
                             displayPuzzle(
                                 convertFileToPushworld(name, puzzle_string),
                                 preview_div,
-                                preview_panel
+                                preview_panel,
+                                puzzle_string //custom-added
                             );
                         }
                     });
@@ -731,6 +925,7 @@ function loadPuzzleGroup(group_name) {
 
 document.addEventListener('DOMContentLoaded', () => {
     $('.pushworld_puzzles .all_puzzles').click(() => {
+        $('.player').addClass('hidden');
         active_preview_panel.css("display", "inline");
         active_game = null;
         $('.pushworld_puzzles .puzzle_panel').css("display", "none");
@@ -806,6 +1001,7 @@ function keydownHandler(keycode) {
 
     var displacements = { '38': [-1, 0], '40': [1, 0], '37': [0, -1], '39': [0, 1] };
     var action_labels = { '38': 'U', '40': 'D', '37': 'L', '39': 'R' };
+    
 
     if (keycode in displacements) {
         var current_state = active_game.state_history[active_game.state_history.length - 1];
@@ -838,7 +1034,7 @@ function addPuzzlePreview(preview_panel) {
     return clone;
 }
 
-function displayPuzzle(pushworld, preview_div, preview_panel) {
+function displayPuzzle(pushworld, preview_div, preview_panel, puzzle_string /*custom-added*/) {
     clone = preview_div;
     clone.children(".pw-puzzle-loading").css("display", "none");
     clone.children("canvas").css("display", "block");
@@ -847,15 +1043,42 @@ function displayPuzzle(pushworld, preview_div, preview_panel) {
     clone.data("puzzle", pushworld);
 
     clone.click(pushworld, (event) => {
-        
-        var pushworld = event.data;
-        $('.pushworld_puzzles .puzzle_panel .title').html(pushworld.name);
+
+        var _pushworld = event.data;
+        $('.pushworld_puzzles .puzzle_panel .title').html(_pushworld.name);
         preview_panel.css("display", "none");
         active_preview_panel = preview_panel;
         $('.pushworld_puzzles .puzzle_panel').css("display", "inline");
-        initGame(pushworld);
+        //custom-added
+        const keyToTransfer = ['moveables', 'walls', 'goals'];
+        const propertiesToTransfer = ['id', 'boundaryPixels', 'position', 'goal_position'];
+        const temp_level = {};
+        for (const values of keyToTransfer) {
 
-        
+            temp_level[values] = []; //moveables
+
+            for (const _values of _pushworld[values]) {
+
+                const temp = {};
+                for (const __values of propertiesToTransfer) { //['id', 'boundaryPixels', 'position']
+
+                    if (_values[__values] != null) temp[__values] = _values[__values];
+
+                }
+                temp_level[values].push(temp);
+
+            }
+
+        }
+        current_level = JSON.stringify(temp_level);
+        current_level_string = puzzle_string;
+        console.log(current_level);
+        console.log(puzzle_string);
+        $('.algorithm').removeClass('hidden');
+        //custom-added
+        initGame(_pushworld);
+        $('.player').removeClass('hidden');
+
     })
 
     var canvas = clone.children("canvas")[0];
