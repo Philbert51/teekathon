@@ -114,7 +114,7 @@ def curriculum(queue : q.Queue) :
 
     previous_interaction_id = None
     current_prompt = prompt
-    retry = 0
+    version = 0
 
     for index in range(len(input_test)) :
         updateMessageQueue(f"Stage {index + 1} of {len(input_test)}", queue)
@@ -127,8 +127,8 @@ def curriculum(queue : q.Queue) :
                 updateMessageQueue("No output from LLM, stopping", queue)
                 return
             previous_interaction_id = output.id
-            retry += 1
-            updateMessageQueue(f"Program version {retry}\n{output.output_text}", queue)
+            version += 1
+            updateMessageQueue(f"Program version {version} :\n{output.output_text}", queue)
 
             updateMessageQueue(f"Attempt {attempt + 1} : testing against all {index + 1} puzzle(s) so far..", queue)
 
@@ -188,6 +188,7 @@ def nonCurriculum(queue : q.Queue) :
     current_prompt = prompt
     puzzle = input_test[0]
     feedback = None
+    version = 0
 
     #tries 3 times
     for attempt in range(3) :
@@ -197,7 +198,8 @@ def nonCurriculum(queue : q.Queue) :
             updateMessageQueue("No output from LLM, stopping", queue)
             return
         previous_interaction_id = output.id
-        updateMessageQueue(f"Program \n{output.output_text}", queue)
+        version += 1
+        updateMessageQueue(f"Program version {version} :\n{output.output_text}", queue)
 
         #write the generated program plus a driver that runs it on the puzzle
         temp = tempfile.NamedTemporaryFile(suffix = '.py', delete = False, mode = 'w')
@@ -228,7 +230,6 @@ def nonCurriculum(queue : q.Queue) :
         #no error
         if feedback is None :
             updateMessageQueue(f"Solved on attempt {attempt + 1}", queue)
-            updateMessageQueue(f"Solution : {moves}", queue)
             updateMessageQueue(f"Python script : \n{output.output_text}", queue)
             return
 
