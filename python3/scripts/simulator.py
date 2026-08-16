@@ -254,6 +254,10 @@ def main() :
             print('Method :', request.method)
             status = 'Success', 200
             if request.method == 'POST' :
+                now = time.time()
+                stale = [key for key, value in list_process.items() if now - value.get('created_timestamp', now) > 1800]
+                for key in stale :
+                    list_process.pop(key, None)
                 data = request.get_json()
                 print(data)
                 if (data['algorithm'] in ('BFS', 'DFS', 'RGD', 'LLM')) :
